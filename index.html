@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Prism-OS</title>
+        <link rel="Stylesheet" href="style.css">
+    </head>
+    <body>
+
+<div id="os-container"></div>
+<div class="os-container">
+
+    <header class="status-bar">
+        <span id="system-time">0000.00.00 │ 00:00:00 </span>
+        <span class="system-ver">PRISM_v1.0</span>
+    </header>
+
+    <div class="deco-line-heavy"></div>
+
+    <section class="hero-section">
+        <h1>HELL YEA,</h1>
+        <h2>TS' A DUMMY!!!</h2>
+    </section>
+
+    <main class="menu-grid">
+        <div class="deco-line-pattern">◆───────────────────────────────────◆</div>
+
+        <button class="menu-item" onclick="openApp('data-log')">
+            <span class="item-num">01 │</span>
+            <span class="item-title">DATA LOG</span>
+            <span class="item-tag">[ REPOSITORY ]</span>
+        </button>
+
+        <button class="menu-item" onclick="openApp('chrono')">
+            <span class="iten-num">02 │</span>
+            <span class="item-title">CHRONO</span>
+            <span class="item-tag">[ ENGINE ]</span>
+        </button>
+
+        <button class="menu-item" onclick="openApp('parameters')">
+            <span class="item-num">03 │</span>
+            <span class="item-title">PARAMETERS</span>
+            <span class="item-tag">[ CONFIG ]</span>
+        </button>
+
+        <button class="menu-item" onclick="openApp('mood-board')">
+            <span class="item-num">04 │</span>
+            <span class="item-title">MOOD BOARD</span>
+            <span class="item-tag">[ GENERATOR ]</span>
+        </button>
+
+        <div class="deco-line-pattern">◆───────────────────────────────────◆</div>
+        </main>
+
+        <section id="app-window" class="app-window hidden">
+        <div class="app-header">
+            <span id="app-title">MODULE_TITLE</span>
+            <button class="close-btn" onclick="closeApp()">[ CLOSE ]</button>
+        </div>
+        <div class="deco-line-thin"></div>
+        <div id="app-body" class="app-body">
+  </div>
+</section>
+
+    </div>
+
+<script src="app.js"></script>
+    </body>
+</html>

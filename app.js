@@ -1,0 +1,267 @@
+let timerInterval = null;
+let timeRemaining = 25 * 60;
+let isTimerRunning = false;
+
+function updateClock() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+    const formattedTime = `${year}.${month}.${day} │ ${hours}:${minutes}:${seconds}   `;
+    document.getElementById('system-time').textContent = formattedTime;
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+function openApp(appId) {
+    const windowEl = document.getElementById('app-window');
+    const titleEl = document.getElementById('app-title');
+    const bodyEl = document.getElementById('app-body');
+
+    windowEl.classList.remove('hidden');
+
+    if (appId === 'data-log') {
+        titleEl.textContent = 'MODULE 01 // DATA LOG';
+        
+        bodyEl.innerHTML = `
+            <div class="log-form">
+                <input type="text" id="new-log-input" class="log-input" placeholder="RECORD OBSERVATION..." autocomplete="off">
+                <button class="log-submit-btn" onclick="saveNewLog()">[ COMMIT TO REPOSITORY ]</button>
+            </div>
+            <div class="deco-line-thin"></div>
+            <ul id="saved-logs" class="log-list"></ul>
+        `;
+        displayLogs();
+
+    } else if (appId === 'chrono') {
+        titleEl.textContent = 'MODULE 02 // CHRONO ENGINE';
+        bodyEl.innerHTML = `
+            <div class="pop-chrono-box">
+                <p style="color: var(--pop-yellow); font-weight: 900; font-size: 0.9rem; letter-spacing: 2px;">
+                    [ POMODORO CORE FOCUS ]
+                </p>
+                <div id="timer-render" class="pop-chrono-display">${formatTimerDisplay()}</div>
+                <div class="pop-chrono-controls">
+                    <button class="pop-btn" onclick="toggleTimer()">START / PAUSE</button>
+                    <button class="pop-btn" onclick="resetTimer()" style="background-color: var(--bg-cream);">RESET</button>
+                </div>
+            </div>
+        `; 
+
+    } else if (appId === 'parameters') {
+        titleEl.textContent = 'MODULE 03 // PARAMETERS';
+
+        const currentTheme = document.body.classList.contains('cyberpunk') ? 'SWISS DAY' : 'CYBERPUNK NIGHT';
+
+        bodyEl.innerHTML = `
+        <p style="color: var(--slate); font-size: 0.85rem; margin-bottom: 15px;">[ SYSTEM MATRIX INTERFACE BESIGN OVERRIDES ]</p>
+        <div class="param-toggle-box">
+            <div>
+                <strong style="display:block;">CHROMATIC PROFILE</strong>
+                <span style="font-size:0.8rem; color: var(--slate);">Toggle between Swiss minimal canvas and dark terminal architecture.</span>
+            </div>
+            <button id="theme-toggle-btn" class="param-btn" onclick="toggleSystemTheme()">[ SWITCH TO ${currentTheme} ]</button>
+        </div>
+        `;
+    } else if (appId === 'mood-board') {
+            titleEl.textContent = 'MODULE 04 // MOOD BOARD';
+            bodyEl.innerHTML = `
+                <div class="theme-selectors">
+                    <label class="theme-label"><input type="checkbox" id="theme-geo" checked> [ GEOMETRIC ]</label>
+                    <label class="theme-label"><input type="checkbox" id="theme-neon"> [ NEON ]</label>
+                    <label class="theme-label"><input type="checkbox" id="theme-swiss"> [ SWISS ]</label>
+                </div>
+                <div id="art-canvas" class="art-canvas"></div>
+                <button class="art-btn" onclick="generateArt()">[ GENERATE ALGORITHM ]</button>
+                <button class="art-btn" onclick="setWallpaper()"
+                style="background-color; var(--mustard); flex-grow: 1;">[ SET WALLPAPER ]</button>
+                </div>
+            `;
+}
+}
+
+function closeApp() {
+    document.getElementById('app-window').classList.add('hidden');
+}
+
+function saveNewLog() {
+    const inputEl = document.getElementById('new-log-input');
+    const text = inputEl.value.trim();
+
+    if (text === '') return;
+    let logs = JSON.parse(localStorage.getItem('prism_logs')) || [];
+
+    const timestamp = new Date();
+    const dateStr = `${timestamp.getHours().toString().padStart(2, '0')}:${timestamp.getMinutes().toString().padStart(2, '0')}`;
+
+    const newEntry = {
+        text: text,
+        time: dateStr
+    };
+
+    logs.push(newEntry);
+    localStorage.setItem('prism_logs', JSON.stringify(logs));
+
+    inputEl.value = '';
+    displayLogs();
+}
+
+function displayLogs() {
+    const listEl = document.getElementById('saved-logs');
+    let logs = JSON.parse(localStorage.getItem('prism_logs')) || [];
+
+    if (logs.length === 0) {
+        listEl.innerHTML = `<li style="color: var(--slate); font-style: italic;">REPOSITORY IS EMPTY // NO DATA FOUND</li>`;
+        return;
+    }
+
+    listEl.innerHTML = logs.map((log, index) => {
+        const paddedIndex = String(index + 1).padStart(3, '0');
+        return `
+          <li class="log-list-item">
+          <span class="log-index">${paddedIndex}</span>
+          <span class="log-text">${log.text}</span>
+          <span class="log-date">${log.time}</span>
+          </li>
+          `;
+    }).join('');
+}
+
+function toggleTimer() {
+    if (isTimerRunning) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+    } else {
+        isTimerRunning = true;
+        timerInterval = setInterval(() => {
+            const displayEl = document.getElementById('timer-render');
+            if(displayEl) {
+                if(timeRemaining > 0) {
+                    timeRemaining--;
+                    displayEl.textContent = formatTimerDisplay();
+                } else {
+                    clearInterval(timerInterval);
+                    isTimerRunning = false;
+                    alert("Interval concluded. Initiate resting protocol.");
+                    resetTimer();
+                }
+            } else {
+                if (timeRemaining > 0) {
+                    timeRemaining--;
+                } else {
+                    clearInterval(timerInterval);
+                    isTimerRunning = false;
+                }
+            }
+        }, 1000);
+    }
+}
+
+function resetTimer() {
+    clearInterval(timerInterval);
+    isTimerRunning = false;
+    timeRemaining = 25 * 60;
+    const displayEl = document.getElementById('timer-render');
+    if (displayEl) displayEl.textContent = formatTimerDisplay();
+}
+
+function formatTimerDisplay(){
+    const minutes = String(Math.floor(timeRemaining / 60)).padStart(2, '0');
+    const seconds = String(timeRemaining % 60).padStart(2, '0');
+    return `${minutes}:${seconds}`;
+}
+
+function toggleSystemTheme() {
+    const body = document.body;
+    const btn = document.getElementById('theme-toggle-btn');
+    
+    body.classList.toggle('cyberpunk');
+    
+    if (body.classList.contains('cyberpunk')) {
+        btn.textContent = '[ SWITCH TO SWISS DAY ]';
+    } else {
+        btn.textContent = '[ SWITCH TO CYBERPUNK NIGHT ]';
+    }
+}
+
+const appWindow = document.getElementById('app-window');
+const appHeader = document.querySelector('.app-header');
+
+let isDragging = false;
+let offsetX, offsetY;
+
+appHeader.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    offsetX = e.clientX - appWindow.getBoundingClientRect().left;
+    offsetY = e.clientY - appWindow.getBoundingClientRect().top;
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+
+    let newX = e.clientX - offsetX;
+    let newY = e.clientY - offsetY;
+
+appWindow.style.left = `${newX}px`;
+appWindow.style.top = `${newY}px`;
+});
+
+document.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+function generateArt() {
+    const canvas = document.getElementById('art-canvas');
+    canvas.innerHTML = '';
+
+    const useGeo = document.getElementById('theme-geo').checked;
+    const useNeon = document.getElementById('theme-neon').checked;
+    const useSwiss = document.getElementById('theme-swiss').checked;
+
+    let colors = ['#2b2b2b', '#ebe1bf'];
+    if (useNeon) colors.push('#ff65a3', '#ffd200', '#08ccbc');
+    if (useSwiss) colors.push('#cc6655', '#e59933', '#44c063');
+
+    const shapes = useGeo ? ['50%', '0%'] : ['0%'];
+    const shapeCount = Math.floor(Math.random() * 6) + 10;
+
+    for (let i = 0; i < shapeCount; i++) {
+        const shape = document.createElement('div');
+        shape.classList.add('art-shape');
+
+        const width = Math.floor(Math.random() * 150) + 20;
+        const height = useGeo && Math.random() > 0.5 ? width : Math.floor(Math.random() * 150) + 20;
+
+        const top = Math.floor(Math.random() * 250) - 20;
+        const left = Math.floor(Math.random() * 350) - 20;
+
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const borderRadius = shapes[Math.floor(Math.random() * shapes.length)];
+
+        shape.style.width = `${width}px`;
+        shape.style.height = `${height}px`;
+        shape.style.top = `${top}px`;
+        shape.style.left = `${left}px`;
+        shape.style.backgroundColor = color;
+        shape.style.borderRadius = borderRadius;
+        shape.style.zIndex = i;
+
+        canvas.appendChild(shape);
+    }
+}
+
+function setWallpaper() {
+    const canvas = document.getElementById('art-canvas');
+    const wallpaperLayer = document.getElementById('os-wallpaper');
+
+    wallpaperLayer.innerHTML = canvas.getHTML;
+    alert("SYSTEM: Background updated successfully.");
+}
+
+
+
