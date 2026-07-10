@@ -20,7 +20,7 @@ Chrono is a pomodoro timer. looks ridiculous because i gave it this pop-art styl
 
 [![IP5](IP6.png)](IP6.png)
 
-Parameterss is where you can switch themes. swiss day is the default cream look, cyberpunk night flips everything to dark with green and pink. the toggle button is literally the only setting
+Parameters is where you can switch themes. swiss day is the default cream look, cyberpunk night flips everything to dark with green and pink. the toggle button is the only setting.
 
 [![IP5](IP7.png)](IP7.png)
 
@@ -28,7 +28,7 @@ Not spoiling the moodboard here cuz that one is fun. you check some boxes (geome
 
 The Gallery does pretty much nothing, just fake folder icons that all say corrupted or access denied except one that says welcome admin. just a little easter egg
 
-And finally Arcade is the chrome dino game. literally. i re-made it with emojis for the dino and cacti and birds. spacebar to jump, score counter. nothing special but it worksss
+And finally Arcade is the chrome dino game. i re-made it with emojis for the dino and cacti and birds. spacebar to jump, score counter. So yea a lil fun thing to try i guess.
 
 [![IP5](IP4.png)](IP5.png)
 
