@@ -2,6 +2,14 @@ let timerInterval = null;
 let timeRemaining = 25 * 60;
 let isTimerRunning = false;
 
+setTimeout(() => {
+const bootScreen = document.getElementById('boot-screen');
+if (bootScreen) {
+    bootScreen.classList.add('boot-hidden');
+    setTimeout(() => bootScreen.remove(), 500);
+}
+}, 2500);
+
 function updateClock() {
     const now = new Date();
     const year = now.getFullYear();
@@ -17,6 +25,44 @@ function updateClock() {
 
 setInterval(updateClock, 1000);
 updateClock();
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSound(type) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    if (type === 'click') {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.05);
+    } else if (type === 'success') {
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1);
+
+         gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+         gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3)
+    }
+}
+
+document.addEventListener('click', (e) => {
+    if (e.target.closest('button')) {
+        playSound('click');
+    }
+});
 
 function openApp(appId) {
     const windowEl = document.getElementById('app-window');
@@ -82,6 +128,30 @@ function openApp(appId) {
                 style="background-color; var(--mustard); flex-grow: 1;">[ SET WALLPAPER ]</button>
                 </div>
             `;
+} else if (appId === 'gallery') {
+    titleEl.textContent = 'MODULE 05 // GALLERY ARCHIVES';
+    bodyEl.innerHTML = `
+                <p style="color: var(--slate); font-size: 0.85rem; margin-
+  bottom: 10px;">[ LOCAL STORAGE DIRECTORY ]</p>
+                <div class="gallery-grid">
+                    <div class="gallery-folder folder-pink"
+  onclick="playSound('click'); alert('FILE CORRUPTED.')">
+                        <p>[ IMG_001 ]</p>
+                    </div>
+                    <div class="gallery-folder folder-yellow"
+  onclick="playSound('click'); alert('ACCESS DENIED.')">
+                        <p>[ SYS_CORE ]</p>
+                    </div>
+                    <div class="gallery-folder folder-teal"
+  onclick="playSound('click'); alert('NO DATA FOUND.')">
+                        <p>[ ARCHIVE_A ]</p>
+                    </div>
+                    <div class="gallery-folder folder-dark"
+  onclick="playSound('success'); alert('WELCOME, ADMIN.')">
+                        <p>[ ROOT_KEY ]</p>
+                    </div>
+                </div>
+                `;
 }
 }
 
@@ -259,9 +329,9 @@ function setWallpaper() {
     const canvas = document.getElementById('art-canvas');
     const wallpaperLayer = document.getElementById('os-wallpaper');
 
-    wallpaperLayer.innerHTML = canvas.getHTML;
+    wallpaperLayer.innerHTML = canvas.innerHTML;
+    playSound('success');
     alert("SYSTEM: Background updated successfully.");
 }
-
 
 
