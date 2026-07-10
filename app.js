@@ -26,7 +26,7 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const audioCtx = new AudioContext();
 function playSound(type) {
     if (audioCtx.state === 'suspended') audioCtx.resume();
 
@@ -54,7 +54,7 @@ function playSound(type) {
          gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
 
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.3)
+        osc.stop(audioCtx.currentTime + 0.3);
     }
 }
 
@@ -169,14 +169,12 @@ function openApp(appId) {
 function closeApp() {
     document.getElementById('app-window').classList.add('hidden');
     
-    // gotta stop the arcade loop or you just keep dying in the background lol
     if (typeof gameInterval !== 'undefined') {
         clearInterval(gameInterval);
         document.removeEventListener('keydown', handleJump);
     }
 }
 
-// treats minimize same as close for now
 function minimizeApp() {
     document.getElementById('app-window').classList.add('hidden');
 }
@@ -239,7 +237,7 @@ function toggleTimer() {
                 } else {
                     clearInterval(timerInterval);
                     isTimerRunning = false;
-                    alert("Interval concluded. Initiate resting protocol.");
+                    alert("Time's Up! Take a break.");
                     resetTimer();
                 }
             } else {
@@ -362,7 +360,7 @@ function setWallpaper() {
 
     wallpaperLayer.innerHTML = canvas.innerHTML;
     playSound('success');
-    alert("SYSTEM: Background updated successfully.");
+    alert("Wallpaper updated!!");
 }
 
 let gameInterval;
@@ -377,8 +375,10 @@ function startDinoGame() {
 
     cactus.style.animationPlayState = 'running';
     cactus.className = '';
-    void cactus.offsetWidth;
-    cactus.className = 'obstacle-single cactus-move';
+    setTimeout(() => {
+            cactus.className = 'obstacle-single cactus-move';
+    }, 10);
+
 
     cactus.onanimationiteration = () => {
         const rand = Math.random();
@@ -404,7 +404,7 @@ function startDinoGame() {
             clearInterval(gameInterval);
             document.removeEventListener('keydown', handleJump);
             playSound('click');
-            alert("SYSTEM FAILURE. FINAL SCORE: " + Math.floor(gameScore / 10));
+            alert("Game Over! Score:" + Math.floor(gameScore / 10));
         } else {
             gameScore++;
             if (scoreDisplay) scoreDisplay.textContent = "SCORE: " + String(Math.floor(gameScore / 10)).padStart(3, '0');
