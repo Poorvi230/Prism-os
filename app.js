@@ -297,21 +297,25 @@ function generateArt() {
     if (useNeon) colors.push('#ff65a3', '#ffd200', '#08ccbc');
     if (useSwiss) colors.push('#cc6655', '#e59933', '#44c063');
 
-    const shapes = useGeo ? ['50%', '0%'] : ['0%'];
-    const shapeCount = Math.floor(Math.random() * 6) + 10;
+    const shapes = ['0%', '50%', '100px'];
+    const shapeCount = Math.floor(Math.random() * 40) + 60;
 
     for (let i = 0; i < shapeCount; i++) {
         const shape = document.createElement('div');
         shape.classList.add('art-shape');
 
-        const width = Math.floor(Math.random() * 150) + 20;
-        const height = useGeo && Math.random() > 0.5 ? width : Math.floor(Math.random() * 150) + 20;
+          const sizeMultiplier = Math.floor(Math.random() * 4) + 1;
+            const width = sizeMultiplier * 40;
+            const height = (Math.random() > 0.5 ? sizeMultiplier : Math.floor(Math.random() * 4) + 1) * 40;
 
-        const top = Math.floor(Math.random() * 250) - 20;
-        const left = Math.floor(Math.random() * 350) - 20;
+            const maxRows = Math.floor(window.innerHeight / 40) + 2;
+            const maxCols = Math.floor(700 / 40) + 2;
 
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        const borderRadius = shapes[Math.floor(Math.random() * shapes.length)];
+            const top = (Math.floor(Math.random() * maxRows) - 1) * 40;
+            const left = (Math.floor(Math.random() * maxCols) - 1) * 40;
+
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const borderRadius = useGeo ? shapes[Math.floor(Math.random() * shapes.length)] : '0%';
 
         shape.style.width = `${width}px`;
         shape.style.height = `${height}px`;
@@ -320,6 +324,8 @@ function generateArt() {
         shape.style.backgroundColor = color;
         shape.style.borderRadius = borderRadius;
         shape.style.zIndex = i;
+
+        shape.style.mixBlendMode = 'multiply';
 
         canvas.appendChild(shape);
     }

@@ -34,7 +34,11 @@ body {
     width: 100%;
     max-width: 550px;
     background-color: var(--bg-cream);
+    border: 3px solid var(--charcoal);
+    box-shadow: 12px 12px 0px var(--charcoal);
     padding: 20px;
+    z-index: 10;
+    position: relative;
 }
 
 .status-bar {
@@ -279,7 +283,8 @@ body.cyberpunk {
 }
 
 body.cyberpunk .os-container {
-    background-color: #0d0e15;
+    background-color: rgba(34, 49, 53, 0.85);
+    
 }
 
 body.cyberpunk * {
@@ -313,7 +318,7 @@ body.cyberpunk .item-tag { color: #ff007f; }
 
 body.cyberpunk .app-window {
     border-color: #00ffcc;
-    box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+    box-shadow: 0 0 15px rgba(46, 180, 153, 0.2);
 }
 
 .param-toggle-box {
@@ -379,7 +384,6 @@ body.cyberpunk .param-btn {
 }
 .art-btn:active {
     transform: translate(3px, 3px);
-    box-shadow: 3px 3px 0px var(--charcoal);
 }
 .art-shape {
     position: absolute;
@@ -424,12 +428,14 @@ conic-gradient(var(--pop-teal) 90deg, transparent 90deg 180deg, var(--pop-pink) 
 #os-wallpaper {
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100vw;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 700px;
     height: 100vh;
     z-index: -1;
     overflow: hidden;
-    opacity: 0.8;
+    opacity: 1;
 }
 
 #os-wallpaper .art-shape {
