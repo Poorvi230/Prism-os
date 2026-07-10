@@ -388,7 +388,6 @@ body.cyberpunk .param-btn {
 .art-shape {
     position: absolute;
     border: 3px solid var(--charcoal);
-    box-shadow: 4px 4px 0px rgba(0,0,0,0.5);
 }
 
   body {
@@ -542,3 +541,79 @@ conic-gradient(var(--pop-teal) 90deg, transparent 90deg 180deg, var(--pop-pink) 
         background-color: #161925;
         color: #ff007f;
     }
+
+    #game-board {
+        width: 100%;
+        height: 200px;
+        border: 3px solid var(--charcoal);
+        border-bottom: 6px solid var(--charcoal);
+        position: relative;
+        overflow: hidden;
+        background-color: rgba(0,0,0,0.05);
+        margin-bottom: 15px;
+        }
+
+        body.cyberpunk #game-board {
+            border-color: #00ffcc;
+            background-color: rgba(0, 255, 204, 0.5);
+        }
+
+        #dino {
+            width: 40px;
+            height: 40px;
+            background-color: transparent !important;
+            position: absolute;
+            top: 110px;
+            left: 20px;
+            transform: scaleX(-1);
+        }
+        #dino::after {
+            content: "🦖";
+            font-size: 35px;
+            line-height: 40px;
+        }
+
+        body.cyberpunk #dino {
+            background-color: #ff007f; }
+            .jump {
+                animation: jump-anim 0.5s linear;
+            }
+
+            @keyframes jump-anim {
+                0% { top: 110px; }
+                40% { top: 30px; }
+                50% { top: 30px }
+                60% { top: 30px }
+                100% { top: 110px }
+            }
+
+            #cactus {
+                background-color: transparent !important;
+                position: absolute;
+                left: 100%;
+            }
+             
+             .obstacle-single {top: 110px; width: 30px; height: 40px; font-size: 35px; }
+             .obstacle-single::after { content: "🌵"; }
+
+             .obstacle-double { top: 110px; width: 50px; height: 40px; font-size: 35px; }
+             .obstacle-double::after { content:  "🌵🌵"; }
+
+             .obstacle-triple { top: 110px; width: 70px; height: 40px; font-size: 35px; }
+             .obstacle-triple::after { content: "🌵🌵🌵"; }
+
+             .obstacle-bird-low { top: 105px; width: 40px; height: 40px; font-size: 35px; transform: scaleX(1); }
+             .obstacle-bird-low::after { content: "🦅"; display: block; }
+
+             .obstacle-bird-high { top: 50px; width: 40px; height: 40px; font-size: 35px; transform: scaleX(1); }
+             .obstacle-bird-high::after { content: "🦅"; display: block; }
+
+            body.cyberpunk #cactus { background-color: #00ffcc }
+            .cactus-move {
+                animation: cactus-anim 1.5s infinite linear;
+            }
+            @keyframes cactus-anim {
+                0% { left: 100%; }
+                100% { left: -100px; }
+            }
+        

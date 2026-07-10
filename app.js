@@ -152,7 +152,23 @@ function openApp(appId) {
                     </div>
                 </div>
                 `;
-}
+} else if (appId === 'arcade') {
+    titleEl.textContent = 'MODULE 06 // ARCADE SIMULATION';
+    bodyEl.innerHTML = ` 
+    <p style="color: var(--slate); font-size: 0.85rem; margin-bottom: 10px;">[ PRESS SPACEBAR OR CLICK JUMP TO EVADE ]</p>
+            <div id="game-board">
+                <div id="dino"></div>
+                <div id="cactus"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span id="dino-score" style="font-size: 1.5rem; font-weight: 900; color: var(--sage);">SCORE: 000</span>
+                <div style="display: flex; gap: 10px;">
+                    <button class="pop-btn" onclick="startDinoGame()">START</button>
+                    <button id="jump-btn" class="pop-btn" onclick="jumpDino()" style="background-color: var(--pop-pink);">JUMP</button>
+                </div>
+            </div>
+                    `;
+     }
 }
 
 function closeApp() {
@@ -294,8 +310,8 @@ function generateArt() {
     const useSwiss = document.getElementById('theme-swiss').checked;
 
     let colors = ['#2b2b2b', '#ebe1bf'];
-    if (useNeon) colors.push('#ff65a3', '#ffd200', '#08ccbc');
-    if (useSwiss) colors.push('#cc6655', '#e59933', '#44c063');
+        if (useNeon) colors.push('#ff007f', '#00ffcc', '#fce260', '#ff007f', '#00ffcc', '#fce260');
+        if (useSwiss) colors.push('#cc6655', '#e59933', '#44c063', '#cc6655', '#e59933', '#44c063');
 
     const shapes = ['0%', '50%', '100px'];
     const shapeCount = Math.floor(Math.random() * 40) + 60;
@@ -325,7 +341,8 @@ function generateArt() {
         shape.style.borderRadius = borderRadius;
         shape.style.zIndex = i;
 
-        shape.style.mixBlendMode = 'multiply';
+        shape.style.opacity
+     = '0.85';
 
         canvas.appendChild(shape);
     }
@@ -339,5 +356,83 @@ function setWallpaper() {
     playSound('success');
     alert("SYSTEM: Background updated successfully.");
 }
+
+let gameInterval;
+let gameScore = 0;
+
+function startDinoGame() {
+    const dino = document.getElementById('dino');
+    const cactus = document.getElementById('cactus');
+    const scoreDisplay = document.getElementById('dino-score');
+
+    if (!dino || !cactus) return;
+
+    cactus.style.animationPlayState = 'running';
+    cactus.className = '';
+    void cactus.offsetWidth;
+    cactus.className = 'obstacle-single cactus-move';
+
+    cactus.onanimationiteration = () => {
+        const rand = Math.random();
+        if (rand < 0.2) cactus.className = 'obstacle-single cactus-move';
+        else if (rand < 0.4) cactus.className = 'obstacle-double cactus-move';
+        else if (rand < 0.6) cactus.className = 'obstacle-triple cactus-move';
+        else if (rand < 0.8) cactus.className = 'obstacle-bird-low cactus-move';
+        else cactus.className = 'obstacle-bird-high cactus-move';
+    };
+
+    gameScore = 0;
+    document.addEventListener('keydown', handleJump);
+
+                clearInterval(gameInterval);
+                gameInterval = setInterval(() => {
+                    let dinoTop = parseInt(window.getComputedStyle(dino).getPropertyValue('top'));
+            let obsLeft = parseInt(window.getComputedStyle(cactus).getPropertyValue('left'));
+            let obsTop = parseInt(window.getComputedStyle(cactus).getPropertyValue('top'));
+            let obsWidth = cactus.offsetWidth;
+            
+            if (obsLeft < 55 && obsLeft + obsWidth > 25 && dinoTop < obsTop + 35 && dinoTop + 35 > obsTop) {
+                cactus.style.animationPlayState = 'paused';
+            clearInterval(gameInterval);
+                document.removeEventListener('keydown', handleJump);
+                playSound('click');
+                alert("SYSTEM FAILURE. FINAL SCORE: " + Math.floor(gameScore / 10));
+            } else {
+                gameScore++;
+                if (scoreDisplay) scoreDisplay.textContent = "SCORE: " +
+  String(Math.floor(gameScore / 10)).padStart(3, '0');
+            }
+        }, 10);
+}   
+
+function handleJump(e) {
+    if (e.code === 'Space' || e.code === 'ArrowUp') {
+        e.preventDefault();
+        jumpDino();
+        const btn = document.getElementById('jump-btn');
+        if (btn) {
+            btn.style.transform = 'translate(2px, 2px)';
+            btn.style.boxShadow = '2px 2px 0px var(--charcoal)';
+            setTimeout(() => {
+                btn.style.transform = '';
+                btn.style.boxShadow = '';
+            }, 150);
+        }
+    }
+}
+
+function jumpDino() {
+    const dino = document.getElementById('dino');
+
+    if (!dino.classList.contains('jump')) {
+        dino.classList.add('jump');
+        playSound('success');
+
+        setTimeout(() => {
+            dino.classList.remove('jump');
+        }, 500);
+    }
+}
+
 
 
