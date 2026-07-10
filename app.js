@@ -105,7 +105,7 @@ function openApp(appId) {
         const currentTheme = document.body.classList.contains('cyberpunk') ? 'SWISS DAY' : 'CYBERPUNK NIGHT';
 
         bodyEl.innerHTML = `
-        <p style="color: var(--slate); font-size: 0.85rem; margin-bottom: 15px;">[ SYSTEM MATRIX INTERFACE BESIGN OVERRIDES ]</p>
+        <p style="color: var(--slate); font-size: 0.85rem; margin-bottom: 15px;">[ SYSTEM MATRIX INTERFACE DESIGN OVERRIDES ]</p>
         <div class="param-toggle-box">
             <div>
                 <strong style="display:block;">CHROMATIC PROFILE</strong>
@@ -125,33 +125,28 @@ function openApp(appId) {
                 <div id="art-canvas" class="art-canvas"></div>
                 <button class="art-btn" onclick="generateArt()">[ GENERATE ALGORITHM ]</button>
                 <button class="art-btn" onclick="setWallpaper()"
-                style="background-color; var(--mustard); flex-grow: 1;">[ SET WALLPAPER ]</button>
+                style="background-color: var(--mustard);">[ SET WALLPAPER ]</button>
                 </div>
             `;
 } else if (appId === 'gallery') {
     titleEl.textContent = 'MODULE 05 // GALLERY ARCHIVES';
-    bodyEl.innerHTML = `
-                <p style="color: var(--slate); font-size: 0.85rem; margin-
-  bottom: 10px;">[ LOCAL STORAGE DIRECTORY ]</p>
-                <div class="gallery-grid">
-                    <div class="gallery-folder folder-pink"
-  onclick="playSound('click'); alert('FILE CORRUPTED.')">
-                        <p>[ IMG_001 ]</p>
-                    </div>
-                    <div class="gallery-folder folder-yellow"
-  onclick="playSound('click'); alert('ACCESS DENIED.')">
-                        <p>[ SYS_CORE ]</p>
-                    </div>
-                    <div class="gallery-folder folder-teal"
-  onclick="playSound('click'); alert('NO DATA FOUND.')">
-                        <p>[ ARCHIVE_A ]</p>
-                    </div>
-                    <div class="gallery-folder folder-dark"
-  onclick="playSound('success'); alert('WELCOME, ADMIN.')">
-                        <p>[ ROOT_KEY ]</p>
-                    </div>
+        bodyEl.innerHTML = `
+            <p style="color: var(--slate); font-size: 0.85rem; margin-bottom: 10px;">[ LOCAL STORAGE DIRECTORY ]</p>
+            <div class="gallery-grid">
+                <div class="gallery-folder folder-pink" onclick="playSound('click'); alert('FILE CORRUPTED.')">
+                    <p>[ IMG_001 ]</p>
                 </div>
-                `;
+                <div class="gallery-folder folder-yellow" onclick="playSound('click'); alert('ACCESS DENIED.')">
+                    <p>[ SYS_CORE ]</p>
+                </div>
+                <div class="gallery-folder folder-teal" onclick="playSound('click'); alert('NO DATA FOUND.')">
+                    <p>[ ARCHIVE_A ]</p>
+                </div>
+                <div class="gallery-folder folder-dark" onclick="playSound('success'); alert('WELCOME, ADMIN.')">
+                    <p>[ ROOT_KEY ]</p>
+                </div>
+            </div>
+        `;
 } else if (appId === 'arcade') {
     titleEl.textContent = 'MODULE 06 // ARCADE SIMULATION';
     bodyEl.innerHTML = ` 
@@ -172,6 +167,17 @@ function openApp(appId) {
 }
 
 function closeApp() {
+    document.getElementById('app-window').classList.add('hidden');
+    
+    // gotta stop the arcade loop or you just keep dying in the background lol
+    if (typeof gameInterval !== 'undefined') {
+        clearInterval(gameInterval);
+        document.removeEventListener('keydown', handleJump);
+    }
+}
+
+// treats minimize same as close for now
+function minimizeApp() {
     document.getElementById('app-window').classList.add('hidden');
 }
 
@@ -282,6 +288,9 @@ let isDragging = false;
 let offsetX, offsetY;
 
 appHeader.addEventListener('mousedown', (e) => {
+    // block drag if clicking the window controls
+    if (e.target.closest('.close-btn')) return;
+
     isDragging = true;
     offsetX = e.clientX - appWindow.getBoundingClientRect().left;
     offsetY = e.clientY - appWindow.getBoundingClientRect().top;
@@ -341,8 +350,7 @@ function generateArt() {
         shape.style.borderRadius = borderRadius;
         shape.style.zIndex = i;
 
-        shape.style.opacity
-     = '0.85';
+        shape.style.opacity = '0.85';
 
         canvas.appendChild(shape);
     }
@@ -384,25 +392,24 @@ function startDinoGame() {
     gameScore = 0;
     document.addEventListener('keydown', handleJump);
 
-                clearInterval(gameInterval);
-                gameInterval = setInterval(() => {
-                    let dinoTop = parseInt(window.getComputedStyle(dino).getPropertyValue('top'));
-            let obsLeft = parseInt(window.getComputedStyle(cactus).getPropertyValue('left'));
-            let obsTop = parseInt(window.getComputedStyle(cactus).getPropertyValue('top'));
-            let obsWidth = cactus.offsetWidth;
-            
-            if (obsLeft < 55 && obsLeft + obsWidth > 25 && dinoTop < obsTop + 35 && dinoTop + 35 > obsTop) {
-                cactus.style.animationPlayState = 'paused';
+    clearInterval(gameInterval);
+    gameInterval = setInterval(() => {
+        let dinoTop = parseInt(window.getComputedStyle(dino).getPropertyValue('top'));
+        let obsLeft = parseInt(window.getComputedStyle(cactus).getPropertyValue('left'));
+        let obsTop = parseInt(window.getComputedStyle(cactus).getPropertyValue('top'));
+        let obsWidth = cactus.offsetWidth;
+        
+        if (obsLeft < 55 && obsLeft + obsWidth > 25 && dinoTop < obsTop + 35 && dinoTop + 35 > obsTop) {
+            cactus.style.animationPlayState = 'paused';
             clearInterval(gameInterval);
-                document.removeEventListener('keydown', handleJump);
-                playSound('click');
-                alert("SYSTEM FAILURE. FINAL SCORE: " + Math.floor(gameScore / 10));
-            } else {
-                gameScore++;
-                if (scoreDisplay) scoreDisplay.textContent = "SCORE: " +
-  String(Math.floor(gameScore / 10)).padStart(3, '0');
-            }
-        }, 10);
+            document.removeEventListener('keydown', handleJump);
+            playSound('click');
+            alert("SYSTEM FAILURE. FINAL SCORE: " + Math.floor(gameScore / 10));
+        } else {
+            gameScore++;
+            if (scoreDisplay) scoreDisplay.textContent = "SCORE: " + String(Math.floor(gameScore / 10)).padStart(3, '0');
+        }
+    }, 10);
 }   
 
 function handleJump(e) {

@@ -74,13 +74,14 @@
         <section id="app-window" class="app-window hidden">
         <div class="app-header">
             <span id="app-title">MODULE_TITLE</span>
-            <button class="close-btn" onclick="minimizeApp()">[ - ]</button>
-            <button class="close-btn" onclick="closeApp()">[ X ]</button>
+            <div style="display: flex; gap: 10px;">
+                <button class="close-btn" onmousedown="event.stopPropagation()" onclick="minimizeApp()">[ - ]</button>
+                <button class="close-btn" onmousedown="event.stopPropagation()" onclick="closeApp()">[ X ]</button>
+            </div>
         </div>
         <div class="deco-line-thin"></div>
-        <div id="app-body" class="app-body">
-  </div>
-</section>
+        <div id="app-body" class="app-body"></div>
+    </section>
 
 <script src="app.js"></script>
     </body>
